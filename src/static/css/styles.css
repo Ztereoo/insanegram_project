@@ -1,0 +1,108 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+h5 {
+    width: 400px;
+    margin-bottom: 20px;
+    color: #333;
+    text-align:justify
+}
+
+a {
+    color: #3498db;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+input[type="text"] {
+    width: 500px;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+input[type="text"]::placeholder {
+    color: #999;
+}
+
+button[type="submit"] {
+    background-color: #3498db;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button[type="submit"]:hover {
+    background-color: #2980b9;
+}
+
+.search-form {
+    margin: 20px 0;
+}
+
+.search-input{
+    width: 500px
+}
+.search-form input[type="text"] {
+    padding: 5px;
+    font-size: 16px;
+}
+
+.search-form button {
+    padding: 5px 10px;
+    font-size: 16px;
+}
+
+.create-post-form {
+    margin: 20px 0;
+}
+
+.create-post-form input[type="text"],
+.create-post-form textarea {
+    padding: 10px;
+    font-size: 16px;
+    width: 100%;
+    max-width: 500px;
+}
+
+.create-post-form button {
+    padding: 10px 20px;
+    font-size: 16px;
+}
+
+.posts-list {
+    list-style-type: none;
+    padding: 0;
+    width: 500px
+}
+
+.post-item {
+    background-color: #ffffff;
+    border: 1px solid #dddddd;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+.inline-form {
+    display: inline;
+    margin-right: 5px;
+}
+
+.inline-form button {
+    padding: 5px 10px;
+    font-size: 14px;
+}

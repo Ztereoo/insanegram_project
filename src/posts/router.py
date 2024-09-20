@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.posts.models import Posts
 from src.database import get_async_session
 
-from src.posts.schemas import OperationCreate
+from src.posts.schemas import PostCreate
 
 router = APIRouter(
     prefix="/posts",
@@ -54,6 +54,14 @@ async def get_post_by_tag(
     return posts
 
 
-@router.post("/")
-async def add_specific_operations():
-    pass
+@router.post("/create")
+async def add_specific_operations(
+        new_post:PostCreate,
+        session: AsyncSession= Depends(get_async_session)):
+    stmt= insert(Posts).values(**new_post.dict())
+    await session.execute(stmt)
+    await session.commit()
+
+    return f"post successfully added"
+
+

@@ -5,6 +5,7 @@ from auth.base_config import auth_backend, fastapi_users
 from auth.schemas import UserRead, UserCreate
 
 from src.posts.router import router as posts_operation
+from src.pages.router import router as router_pages
 
 
 app = FastAPI(
@@ -23,7 +24,11 @@ app.include_router(
     tags=["Auth"],
 )
 
+
 app.include_router(posts_operation)
+app.include_router(router_pages)
+
+
 
 
 if __name__ == "__main__":

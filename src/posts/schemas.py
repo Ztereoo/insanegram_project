@@ -1,12 +1,13 @@
-from datetime import datetime
-
 from pydantic import BaseModel
+from typing import List, Optional
 
 
-class OperationCreate(BaseModel):
+class PostCreate(BaseModel):
     id: int
-    quantity: str
-    figi: str
-    instrument_type: str
-    date: datetime
-    type: str
+    text: str
+    tags: List[str]
+    photo: Optional[bytes]
+    user_id: int
+
+    class Config:
+        orm_mode = True
