@@ -1,0 +1,1 @@
+This is a test project, the analog of instagram app developed on Fast API
