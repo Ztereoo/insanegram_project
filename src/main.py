@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 import uvicorn
+from fastapi.staticfiles import StaticFiles
 
 from auth.base_config import auth_backend, fastapi_users
 from auth.schemas import UserRead, UserCreate
@@ -11,6 +12,7 @@ from src.pages.router import router as router_pages
 app = FastAPI(
     title="InsaneGram App"
 )
+
 
 app.include_router(
     fastapi_users.get_auth_router(auth_backend),

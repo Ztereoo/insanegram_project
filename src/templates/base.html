@@ -9,10 +9,6 @@
         {% endblock %}
     </title>
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-    {{ toastr.include_jquery() }}
-    {{ toastr.include_toastr_css() }}
-    {{ toastr.message() }}
 </head>
 <body>
 
@@ -37,8 +33,6 @@
 </div>
 
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js
-"></script>
-{{ toastr.include_toastr_js() }}
+
 </body>
 </html>

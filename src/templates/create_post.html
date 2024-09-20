@@ -1,10 +1,28 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "base.html" %}
 
-</body>
-</html>
+{% block title%}
+Post form
+{% endblock %}
+
+{% block content %}
+<form action="/pages/create_post" method="post" enctype="multipart/form-data">
+    <div>
+        <label for="title">Post Title:</label>
+        <input type="text" id="title" name="title" required>
+    </div> <br>
+
+    <div>
+        <label for="tags">Post Tags:</label>
+        <input type="text" id="tags" name="tags" placeholder="e.g. tech, photography" required>
+    </div> <br>
+
+    <div>
+        <label for="photo">Upload Photo:</label>
+        <input type="file" id="photo" name="photo" accept="image/*" required>
+    </div> <br>
+
+    <div>
+        <button type="submit">Create Post</button>
+    </div>
+</form>
+{% endblock %}
