@@ -4,6 +4,8 @@ from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse, PlainTextResponse
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from PIL import Image
+from io import BytesIO
 
 from src.database import get_async_session
 from src.posts.models import Posts
@@ -19,6 +21,27 @@ def b64encode(value: bytes) -> str:
 
 templates.env.filters['b64encode'] = b64encode
 
+def resize_image(image_data: bytes, max_width=450) -> bytes:
+    image = Image.open(BytesIO(image_data))
+
+    format = image.format
+    if format is None:
+        format = "JPG"
+
+    width, height = image.size
+
+    if width > height:
+        new_width = max_width
+        new_height = int((new_width / width) * height)
+    else:
+        new_height = max_width
+        new_width = int((new_height / height) * width)
+
+    image = image.resize((new_width, new_height), Image.Resampling.LANCZOS)
+
+    output = BytesIO()
+    image.save(output, format=format)
+    return output.getvalue()
 
 @router.get("/create_post", response_class=HTMLResponse)
 async def get_create_post(request: Request):
@@ -34,11 +57,12 @@ async def create_new_post(
         session: AsyncSession = Depends(get_async_session)
 ):
     photo_data = await photo.read()
+    resized_photo=resize_image(photo_data)
 
     new_post = Posts(
         text=title,
         tags=tags.split(','),
-        photo=photo_data,
+        photo=resized_photo,
         user_id=1
     )
 

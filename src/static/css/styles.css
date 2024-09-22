@@ -1,44 +1,54 @@
+
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
     margin: 0;
     padding: 0;
-}
-
-h5 {
-    width: 400px;
-    margin-bottom: 20px;
+    background-color: #f5f5f5;
     color: #333;
-    text-align:justify
 }
 
-a {
-    color: #3498db;
-    text-decoration: none;
+
+form {
+    max-width: 500px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+form div {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
     font-weight: bold;
+    color: #333;
 }
 
-a:hover {
-    text-decoration: underline;
-}
-
-input[type="text"] {
-    width: 500px;
-    padding: 10px;
-    margin-bottom: 20px;
+input[type="text"],
+input[type="file"] {
+    width: 100%;
+    padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
     box-sizing: border-box;
 }
 
-input[type="text"]::placeholder {
-    color: #999;
+input[type="text"]:focus,
+input[type="file"]:focus {
+    border-color: #66afe9;
+    outline: none;
+    box-shadow: 0 0 8px rgba(102, 175, 233, 0.6);
 }
 
 button[type="submit"] {
-    background-color: #3498db;
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
     color: white;
-    padding: 10px 20px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
@@ -46,63 +56,49 @@ button[type="submit"] {
 }
 
 button[type="submit"]:hover {
-    background-color: #2980b9;
+    background-color: #0056b3;
 }
 
-.search-form {
-    margin: 20px 0;
-}
 
-.search-input{
-    width: 500px
-}
-.search-form input[type="text"] {
-    padding: 5px;
-    font-size: 16px;
-}
-
-.search-form button {
-    padding: 5px 10px;
-    font-size: 16px;
-}
-
-.create-post-form {
-    margin: 20px 0;
-}
-
-.create-post-form input[type="text"],
-.create-post-form textarea {
-    padding: 10px;
-    font-size: 16px;
-    width: 100%;
-    max-width: 500px;
-}
-
-.create-post-form button {
-    padding: 10px 20px;
-    font-size: 16px;
-}
-
-.posts-list {
-    list-style-type: none;
+ul {
+    list-style: none;
     padding: 0;
-    width: 500px
+    max-width: 800px;
+    margin: 50px auto;
 }
 
-.post-item {
-    background-color: #ffffff;
-    border: 1px solid #dddddd;
-    padding: 15px;
+ul li {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    padding: 20px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+ul li h4 {
+    margin: 0;
     margin-bottom: 10px;
-    border-radius: 5px;
+    font-size: 20px;
+    color: #333;
 }
 
-.inline-form {
-    display: inline;
-    margin-right: 5px;
+ul li p {
+    margin: 0;
+    margin-bottom: 10px;
+    color: #666;
 }
 
-.inline-form button {
-    padding: 5px 10px;
-    font-size: 14px;
+ul li img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+    margin-top: 10px;
 }
+
+
+ul li p.no-image {
+    font-style: italic;
+    color: #999;
+}
+
