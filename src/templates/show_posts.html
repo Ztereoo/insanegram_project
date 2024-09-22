@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}
+My Posts
+{% endblock %}
+{% block content %}
+<ul>
+    {% for post in posts %}
+    <li>
+        <h4>{{post.text}}</h4>
+        <p> Tags: {{post.tags}}</p>
+        {% if post.photo %}
+            <img src="data:image/jpeg;base64, {{post.photo | b64encode}}" alt="Post Image">
+        {% else %}
+            <p>No image found</p>
+        {% endif %}
+    </li>
+    {% endfor%}
+</ul>
+{% endblock %}
