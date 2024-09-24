@@ -11,3 +11,8 @@ class PostCreate(BaseModel):
 
     class Config:
         orm_mode = True
+
+class PostUpdate(BaseModel):
+    text: Optional[str] = None
+    tags: Optional[List[str]] = None
+    photo: Optional[bytes] = None

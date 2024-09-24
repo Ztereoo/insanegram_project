@@ -10,8 +10,8 @@ from src.database import Base, metadata
 
 
 class Role(Base):
-    __tablename__ = 'role'
-    # __table_args__ = {'extend_existing': True}
+    __tablename__ = "role"
+    __table_args__ = {'extend_existing': True}
 
     id= Column(Integer,primary_key=True)
     name= Column(String, nullable=False)
@@ -19,7 +19,7 @@ class Role(Base):
 
 class User(SQLAlchemyBaseUserTable[int], Base):
     __tablename__ = "user"
-    # __table_args__ = {'extend_existing': True}
+    __table_args__ = {'extend_existing': True}
 
     id = Column(Integer, primary_key=True)
     email = Column(String, nullable=False)

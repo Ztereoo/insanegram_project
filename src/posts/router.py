@@ -1,10 +1,12 @@
 from fastapi import APIRouter, Depends, Query, HTTPException
 from sqlalchemy import select, insert, func
 from sqlalchemy.ext.asyncio import AsyncSession
-from src.posts.models import Posts
-from src.database import get_async_session
 
-from src.posts.schemas import PostCreate
+from src.posts.models import Posts
+from src.auth.models import User
+from src.auth.base_config import fastapi_users
+from src.database import get_async_session
+from src.posts.schemas import PostCreate, PostUpdate
 
 router = APIRouter(
     prefix="/posts",
@@ -56,12 +58,50 @@ async def get_post_by_tag(
 
 @router.post("/create")
 async def add_specific_operations(
-        new_post:PostCreate,
-        session: AsyncSession= Depends(get_async_session)):
-    stmt= insert(Posts).values(**new_post.dict())
+        new_post: PostCreate,
+        session: AsyncSession = Depends(get_async_session)):
+    stmt = insert(Posts).values(**new_post.dict())
     await session.execute(stmt)
     await session.commit()
 
     return f"post successfully added"
 
 
+@router.patch("/update/")
+async def update_post(
+        post_id: int = Query(...),
+        post_data: PostUpdate = Depends(),
+        session=Depends(get_async_session)):
+    query = select(Posts).where(Posts.id == post_id)
+    result = await session.execute(query)
+    post = result.scalar_one_or_none()
+
+    if not post:
+        raise HTTPException(status_code=404, detail='Post not found')
+
+    if post_data.text is not None:
+        post.text = post_data.text
+    if post_data.tags is not None:
+        post.tags = post_data.tags
+    if post_data.photo is not None:
+        post.photo = post_data.photo
+
+    await session.commit()
+
+    return f'Post changed successfully'
+
+
+@router.get("/delete")
+async def delete_post_by_id(
+        set_id: int = Query(...),
+        session=Depends(get_async_session)):
+    query = select(Posts).where(Posts.id == set_id)
+    result = await session.execute(query)
+    post = result.scalar_one_or_none()
+
+    if not post:
+        raise HTTPException(status_code=404, detail='No such post in db')
+
+    await session.delete(post)
+    await session.commit()
+    return f"Post Successfully deleted"
