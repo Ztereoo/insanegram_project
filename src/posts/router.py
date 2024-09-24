@@ -1,3 +1,4 @@
+import base64
 from fastapi import APIRouter, Depends, Query, HTTPException
 from sqlalchemy import select, insert, func
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -15,16 +16,27 @@ router = APIRouter(
 
 
 @router.get("/by_id")
-async def get_posts_by_id(
+async def get_posts_by_user_id(
         set_id: int = Query(...),
-        session: AsyncSession = Depends(get_async_session)):
+        session: AsyncSession = Depends(get_async_session),
+        user: User = Depends(fastapi_users.current_user(active=True))):
     query = select(Posts).where(Posts.user_id == set_id)
     result = await session.execute(query)
-    posts = result.scalars().all()
+    post = result.scalar_one_or_none()
 
-    if not posts:
+    photo_base64 = None
+    if post.photo:
+        photo_base64 = base64.b64encode(post.photo).decode('utf-8')
+
+    if not post:
         raise HTTPException(status_code=404, detail=f"No user with {set_id} id found")
-    return posts
+    return {
+        "id": post.id,
+        "text": post.text,
+        "tags": post.tags,
+        "photo": photo_base64,
+        "user_id": post.user_id
+    }
 
 
 @router.get("/by_name")
@@ -59,7 +71,8 @@ async def get_post_by_tag(
 @router.post("/create")
 async def add_specific_operations(
         new_post: PostCreate,
-        session: AsyncSession = Depends(get_async_session)):
+        session: AsyncSession = Depends(get_async_session),
+        user: User = Depends(fastapi_users.current_user(active=True))):
     stmt = insert(Posts).values(**new_post.dict())
     await session.execute(stmt)
     await session.commit()
@@ -71,7 +84,8 @@ async def add_specific_operations(
 async def update_post(
         post_id: int = Query(...),
         post_data: PostUpdate = Depends(),
-        session=Depends(get_async_session)):
+        session=Depends(get_async_session),
+        user: User = Depends(fastapi_users.current_user(active=True))):
     query = select(Posts).where(Posts.id == post_id)
     result = await session.execute(query)
     post = result.scalar_one_or_none()
@@ -94,7 +108,8 @@ async def update_post(
 @router.get("/delete")
 async def delete_post_by_id(
         set_id: int = Query(...),
-        session=Depends(get_async_session)):
+        session=Depends(get_async_session),
+        user: User = Depends(fastapi_users.current_user(superuser=True))):
     query = select(Posts).where(Posts.id == set_id)
     result = await session.execute(query)
     post = result.scalar_one_or_none()
