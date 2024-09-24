@@ -17,6 +17,7 @@ class Posts(Base):
     photo = Column(LargeBinary, nullable=True)
     user_id = Column(Integer, ForeignKey('user.id'))
 
+
     @property
     def user(self):
         from src.auth.models import User

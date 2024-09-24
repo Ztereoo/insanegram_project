@@ -63,7 +63,8 @@ async def create_new_post(
         title: str = Form(...),
         tags: str = Form(...),
         photo: UploadFile = File(...),
-        session: AsyncSession = Depends(get_async_session)
+        session: AsyncSession = Depends(get_async_session),
+        user: User = Depends(fastapi_users.current_user(active=True))
 ):
     photo_data = await photo.read()
     resized_photo = resize_image(photo_data)
@@ -72,7 +73,7 @@ async def create_new_post(
         text=title,
         tags=tags.split(','),
         photo=resized_photo,
-        user_id=1
+        user_id= user.id
     )
 
     session.add(new_post)
@@ -80,11 +81,7 @@ async def create_new_post(
 
     return templates.TemplateResponse('create_post.html', {"request": request, "message": "Post successfully created!"})
 
-# @router.exception_handler(HTTPException)
-# async def http_exception_handler(request: Request, exc: HTTPException):
-#     if exc.status_code == 401:
-#         return templates.TemplateResponse("error.html", {"request": request, "message": exc.detail}, status_code=401)
-#     return await default_exception_handler(request, exc)
+
 @router.get("/show_posts", response_class=HTMLResponse)
 async def show_posts(
         request: Request,
@@ -96,7 +93,7 @@ async def show_posts(
     query = select(Posts)
     result = await session.execute(query)
     posts = result.scalars().all()
-    return templates.TemplateResponse('show_posts.html', {"request": request, "posts": posts})
+    return templates.TemplateResponse('show_posts.html', {"request": request, "posts": posts,})
 
 
 
