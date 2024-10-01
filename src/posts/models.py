@@ -20,5 +20,4 @@ class Posts(Base):
 
     @property
     def user(self):
-        from src.auth.models import User
         return relationship('User', back_populates="posts")

@@ -20,37 +20,61 @@ async def get_posts_by_user_id(
         set_id: int = Query(...),
         session: AsyncSession = Depends(get_async_session),
         user: User = Depends(fastapi_users.current_user(active=True))):
+
     query = select(Posts).where(Posts.user_id == set_id)
     result = await session.execute(query)
-    post = result.scalar_one_or_none()
+    posts = result.scalars().all()
 
-    photo_base64 = None
-    if post.photo:
-        photo_base64 = base64.b64encode(post.photo).decode('utf-8')
 
-    if not post:
-        raise HTTPException(status_code=404, detail=f"No user with {set_id} id found")
-    return {
-        "id": post.id,
-        "text": post.text,
-        "tags": post.tags,
-        "photo": photo_base64,
-        "user_id": post.user_id
-    }
+    if not posts:
+        raise HTTPException(status_code=404, detail=f"No posts found for user_id {set_id}")
+
+
+    post_list = []
+    for post in posts:
+        photo_base64 = None
+        if post.photo:
+            photo_base64 = base64.b64encode(post.photo).decode('utf-8')
+
+        post_list.append({
+            "id": post.id,
+            "text": post.text,
+            "tags": post.tags,
+            "photo": photo_base64,
+        })
+
+    return post_list
 
 
 @router.get("/by_name")
 async def get_post_by_name(
         get_name: str = Query(...),
         session: AsyncSession = Depends(get_async_session)):
+
     get_name = get_name.lower()
+
     query = select(Posts).where(func.lower(Posts.text).contains(get_name))
     result = await session.execute(query)
     posts = result.scalars().all()
 
+
     if not posts:
-        raise HTTPException(status_code=404, detail=f"No posts matches with word {get_name}")
-    return posts
+        raise HTTPException(status_code=404, detail=f"No posts match with the word '{get_name}'")
+
+    post_list = []
+    for post in posts:
+        photo_base64 = None
+        if post.photo:
+            photo_base64 = base64.b64encode(post.photo).decode('utf-8')
+
+        post_list.append({
+            "id": post.id,
+            "text": post.text,
+            "tags": post.tags,
+            "photo": photo_base64,
+        })
+
+    return post_list
 
 
 @router.get('/by_tag')
@@ -65,7 +89,20 @@ async def get_post_by_tag(
     if not posts:
         raise HTTPException(status_code=404, detail=f"No tags matches with {get_tag}")
 
-    return posts
+    post_list = []
+    for post in posts:
+        photo_base64 = None
+        if post.photo:
+            photo_base64 = base64.b64encode(post.photo).decode('utf-8')
+
+        post_list.append({
+            "id": post.id,
+            "text": post.text,
+            "tags": post.tags,
+            "photo": photo_base64,
+        })
+
+    return post_list
 
 
 @router.post("/create")

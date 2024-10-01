@@ -1,7 +1,7 @@
 import base64
 from fastapi import APIRouter, Request, Form, Depends, File, UploadFile, HTTPException
 from fastapi.templating import Jinja2Templates
-from fastapi.responses import HTMLResponse, PlainTextResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -13,6 +13,7 @@ from src.auth.base_config import fastapi_users
 from src.auth.models import User
 from src.database import get_async_session
 from src.posts.models import Posts
+from src.posts.router import get_post_by_tag
 
 router = APIRouter(
     prefix="/pages",
@@ -81,7 +82,6 @@ async def create_new_post(
 
     return templates.TemplateResponse('create_post.html', {"request": request, "message": "Post successfully created!"})
 
-
 @router.get("/show_posts", response_class=HTMLResponse)
 async def show_posts(
         request: Request,
@@ -95,6 +95,26 @@ async def show_posts(
     posts = result.scalars().all()
     return templates.TemplateResponse('show_posts.html', {"request": request, "posts": posts,})
 
+@router.get("/login", response_class=HTMLResponse)
+async def get_login_page(request: Request):
+    return templates.TemplateResponse('login.html', {"request": request})
 
 
+@router.post("/auth/jwt/login", response_class=HTMLResponse)
+async def login(
+        request: Request,
+        user: User = Depends(fastapi_users.current_user(active=True))):
+    if user:
+        return RedirectResponse(url="/show_posts", status_code=303)
+    else:
+        return templates.TemplateResponse('error.html', {"request": request, "message": "Invalid credentials"})
+
+@router.post("/search", response_class=HTMLResponse)
+async def return_search(request: Request, tag: str = Form(...), session: AsyncSession = Depends(get_async_session)):
+    posts = await get_post_by_tag(tag, session)
+    if posts:
+        return templates.TemplateResponse('search.html', {"request": request, "posts": posts})
+    else:
+        message = "No posts found for the given tag."
+        return templates.TemplateResponse('search.html', {"request": request, "posts": [], "message": message})
 

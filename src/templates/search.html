@@ -1,12 +1,6 @@
-{% extends "base.html" %}
-{% block title %}
-My Posts
-{% endblock %}
-{% block content %}
-<form action="/pages/search" method="post" enctype="multipart/form-data">
-    <input input type="text" name="tag"> <br> <br>
-    <button onclick="submit">push</button>
-</form>
+{% extends 'base.html'%}
+{% block content%}
+<h2>results</h2>
 <ul>
     {% for post in posts %}
     <li>
@@ -24,4 +18,4 @@ My Posts
     </li>
     {% endfor%}
 </ul>
-{% endblock %}
+{%endblock%}
