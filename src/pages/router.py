@@ -4,12 +4,13 @@ from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse, RedirectResponse
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from starlette.middleware.sessions import SessionMiddleware
 
 
 from PIL import Image
 from io import BytesIO
 
-from src.auth.base_config import fastapi_users
+from src.auth.base_config import fastapi_users,JWTStrategy
 from src.auth.models import User
 from src.database import get_async_session
 from src.posts.models import Posts
@@ -100,14 +101,24 @@ async def get_login_page(request: Request):
     return templates.TemplateResponse('login.html', {"request": request})
 
 
+
 @router.post("/auth/jwt/login", response_class=HTMLResponse)
 async def login(
         request: Request,
         user: User = Depends(fastapi_users.current_user(active=True))):
     if user:
-        return RedirectResponse(url="/show_posts", status_code=303)
+        return RedirectResponse(url="http://127.0.0.1:8000/pages/show_posts", status_code=303)
     else:
         return templates.TemplateResponse('error.html', {"request": request, "message": "Invalid credentials"})
+
+
+@router.get("/logout", response_class=HTMLResponse)
+async def logout(request: Request, user=Depends(fastapi_users.current_user())):
+    request.session.clear()
+    response = RedirectResponse(url="http://127.0.0.1:8000/pages/login")
+    response.delete_cookie(key="Authorization")
+    return response
+
 
 @router.post("/search", response_class=HTMLResponse)
 async def return_search(request: Request, tag: str = Form(...), session: AsyncSession = Depends(get_async_session)):

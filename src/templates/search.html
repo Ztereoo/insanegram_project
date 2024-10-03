@@ -4,14 +4,15 @@
 <ul>
     {% for post in posts %}
     <li>
-        <h5>{{post.user_id}}</h5>
+        <h5>ID юзера ={{post.user_id}}</h5>
+        <h5>ID поста ={{post.id}}</h5>
         <h4>{{post.text}}</h4>
 
         {% for tag in post.tags%}
             <span>#{{tag}}</span>
         {%endfor%}
         {% if post.photo %}
-            <img src="data:image/jpeg;base64, {{post.photo | b64encode}}" alt="Post Image">
+            <img src="data:image/jpeg;base64, {{post.photo}}" alt="Post Image">
         {% else %}
             <p>No image found</p>
         {% endif %}

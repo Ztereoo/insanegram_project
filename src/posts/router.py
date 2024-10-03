@@ -87,7 +87,7 @@ async def get_post_by_tag(
     posts = result.scalars().all()
 
     if not posts:
-        raise HTTPException(status_code=404, detail=f"No tags matches with {get_tag}")
+        raise HTTPException(status_code=404, detail=f"No tags match with {get_tag}")
 
     post_list = []
     for post in posts:
@@ -103,7 +103,6 @@ async def get_post_by_tag(
         })
 
     return post_list
-
 
 @router.post("/create")
 async def add_specific_operations(

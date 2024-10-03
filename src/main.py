@@ -11,11 +11,13 @@ from auth.schemas import UserRead, UserCreate
 from src.posts.router import router as posts_operation
 from src.pages.router import router as router_pages, templates
 from src.auth.models import User
+from starlette.middleware.sessions import SessionMiddleware
 
 
 app = FastAPI(
     title="InsaneGram App"
 )
+app.add_middleware(SessionMiddleware, secret_key="your-secret-key")
 
 app.mount("/static",StaticFiles(directory="src/static"), name="static")
 
